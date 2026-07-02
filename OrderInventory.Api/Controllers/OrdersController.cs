@@ -48,5 +48,38 @@ namespace OrderInventory.Api.Controllers
 
             return Ok(order);
         }
+        [HttpGet]
+        public async Task<ActionResult<List<Order>>> GetAllOrders()
+        {
+            var orders = await _context.Orders.ToListAsync();
+            return Ok(orders);
+        }
+
+        [HttpPut("{id}/status")]
+        public async Task<ActionResult<Order>> UpdateOrderStatus(Guid id, [FromBody] UpdateOrderStatusRequest request)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound("Order not found.");
+            }
+
+            order.OrderStatus = request.OrderStatus;
+            await _context.SaveChangesAsync();
+
+            return Ok(order);
+        }
+
+         [HttpGet("by-product/{productId}")]
+        public async Task<ActionResult<List<Order>>> GetOrdersByProduct(Guid productId)
+         {
+            var orders = await _context.Orders
+                .Where(o => o.ProductId == productId)
+                .ToListAsync();
+
+            return Ok(orders);
+         }
+      
     }
 }

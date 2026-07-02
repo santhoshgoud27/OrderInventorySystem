@@ -22,6 +22,18 @@ namespace OrderInventory.Api.Controllers
             var products = await _context.Products.ToListAsync();
             return Ok(products);
         }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Product>> GetProductById(Guid id)
+        {
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
+
+            if (product == null)
+            {
+                return NotFound("Product not found.");
+            }
+
+            return Ok(product);
+        }
 
         // <-- new method goes HERE, right after GetAllProducts, still inside the class
         [HttpPost]
@@ -42,6 +54,8 @@ namespace OrderInventory.Api.Controllers
 
             return Ok(product);
         }
+
+       
 
     }
 }
